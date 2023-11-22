@@ -1,0 +1,7 @@
+{
+  "scripts": [
+    "https://cdnjs.cloudflare.com/ajax/libs/p5play/3.17.1/p5play.js"
+  ],
+  "styles": [],
+  "showConsole": true
+}
