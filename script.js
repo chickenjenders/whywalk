@@ -24,7 +24,7 @@ function setup() {
   player.text = "Player";
 
   npc = createSprite(200, 200, 50, 50);
-  npc.addImage(npcImg);
+  // npc.addImage(npcImg);
 }
 
 function draw() {
@@ -42,8 +42,4 @@ function draw() {
     player.vel.y = 0;
     player.vel.x = 0;
   }
-
-  drawSprites();
-
-  checkCollision();
 }
