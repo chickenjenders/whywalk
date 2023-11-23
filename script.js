@@ -42,12 +42,8 @@ function draw() {
     player.vel.y = 0;
     player.vel.x = 0;
   }
-  // Draw sprites
+
   drawSprites();
 
-  // Handle user input
-  handleInput();
-
-  // Game logic
   checkCollision();
 }
