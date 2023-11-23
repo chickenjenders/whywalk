@@ -22,7 +22,19 @@ function setup() {
 
 function draw() {
   background(220);
-
+  player.changeAni("walk");
+  if (kb.pressing("left")) {
+    player.vel.x = -1.5;
+  } else if (kb.pressing("right")) {
+    player.vel.x = 1.5;
+  } else if (kb.pressing("up")) {
+    player.vel.y = -1.5;
+  } else if (kb.pressing("down")) {
+    player.vel.y = 1.5;
+  } else {
+    player.vel.y = 0;
+    player.vel.x = 0;
+  }
   // Draw sprites
   drawSprites();
 
@@ -31,28 +43,4 @@ function draw() {
 
   // Game logic
   checkCollision();
-}
-
-function handleInput() {
-  // Player movement
-  if (keyIsDown(LEFT_ARROW)) {
-    player.position.x -= 5;
-  }
-  if (keyIsDown(RIGHT_ARROW)) {
-    player.position.x += 5;
-  }
-  if (keyIsDown(UP_ARROW)) {
-    player.position.y -= 5;
-  }
-  if (keyIsDown(DOWN_ARROW)) {
-    player.position.y += 5;
-  }
-}
-
-function checkCollision() {
-  // Check for collision between player and NPC
-  if (player.collide(npc)) {
-    // Perform actions when the player collides with the NPC
-    console.log("Collided with NPC!");
-  }
 }
