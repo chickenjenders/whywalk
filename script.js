@@ -1,7 +1,14 @@
 let player;
 let npc;
+let cityImg;
 function preload() {
-  playerImg = loadAnimation("./Walk.png", { frameSize: [48, 48], frames: 6 });
+  playerImg = loadAnimation("assets/Walk.png", {
+    frameSize: [48, 48],
+    frames: 6,
+  });
+  cityImg = loadImage("assets/city.png", {
+    frameSize: [630, 500],
+  });
   //img1 = loadAnimation("./idle2.png", { frameSize: [48, 48], frames: 3 });
   //img2 = loadAnimation("./Walk.png", { frameSize: [32, 32], frames: 6 });
 }
@@ -21,7 +28,7 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  image(cityImg, 0, 0, 630, 500);
   player.changeAni("walk");
   if (kb.pressing("left")) {
     player.vel.x = -1.5;
