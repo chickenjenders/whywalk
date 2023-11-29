@@ -1,4 +1,3 @@
-
 let player;
 let cityImg;
 let textArea;
@@ -8,8 +7,6 @@ let score = 0;
 let screen = 0;
 
 function preload() {
-  // Load assets in the preload function
-  //arcadeFont = loadFont("arcadefont.ttf");
   playerImg = loadAnimation("assets/Walk.png", {
     frameSize: [48, 48],
     frames: 6,
@@ -61,8 +58,12 @@ function gameScreen() {
   }
 
   // Check if the player is outside the canvas boundaries
-  if (player.position.x < 0 || player.position.x > width ||
-      player.position.y < 0 || player.position.y > height) {
+  if (
+    player.position.x < 0 ||
+    player.position.x > width ||
+    player.position.y < 0 ||
+    player.position.y > height
+  ) {
     // Player ran off the canvas, transition to a new screen (screen 2, for example)
     screen = 2;
   }
@@ -93,6 +94,7 @@ function gameScreen() {
     textArea.text =
       "Well designed and consistent sidewalks help people walk to their destinations safely and efficiently";
   }
+}
 
 function menuScreen() {
   background("black");
@@ -109,4 +111,8 @@ function mousePressed() {
 
 function startGame() {
   screen = 1;
+}
+
+function endScreen() {
+  // Your end screen code here
 }
