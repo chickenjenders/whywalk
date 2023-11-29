@@ -1,6 +1,8 @@
 let player;
-let npc;
 let cityImg;
+let textArea;
+let bus;
+let sideWalk;
 function preload() {
   playerImg = loadAnimation("assets/Walk.png", {
     frameSize: [48, 48],
@@ -14,7 +16,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(800, 600);
+  createCanvas(630, 600);
 
   // Create the player and NPC
   player = new Sprite();
@@ -23,8 +25,23 @@ function setup() {
   player.rotationLock = true;
   player.text = "Player";
 
-  npc = createSprite(200, 200, 50, 50);
-  // npc.addImage(npcImg);
+  textArea = new Sprite();
+  textArea.w = 630;
+  textArea.h = 100;
+  textArea.y = 530;
+  textArea.color = "gray";
+  textArea.collider = "static";
+  textArea.textSize = 17;
+  textArea.text =
+    "I'm always late to work! How can I make it easier to get there on time?";
+
+  bus = createSprite(258, 231, 96, 17);
+  bus.collider = "static";
+  bus.color = "white";
+
+  sideWalk = createSprite(200, 470, 17, 16);
+  sideWalk.color = "#BAC0D0";
+  sideWalk.collider = "static";
 }
 
 function draw() {
