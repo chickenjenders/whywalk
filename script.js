@@ -1,3 +1,4 @@
+
 let player;
 let cityImg;
 let textArea;
@@ -5,11 +6,10 @@ let bus;
 let sideWalk;
 let score = 0;
 let screen = 0;
-let arcadeFont; // Declare arcadeFont variable
 
 function preload() {
   // Load assets in the preload function
-  arcadeFont = loadFont("arcadefont.ttf");
+  //arcadeFont = loadFont("arcadefont.ttf");
   playerImg = loadAnimation("assets/Walk.png", {
     frameSize: [48, 48],
     frames: 6,
@@ -21,7 +21,6 @@ function preload() {
 
 function setup() {
   createCanvas(630, 600);
-  //textFont(arcadeFont);
 }
 
 function draw() {
@@ -61,6 +60,13 @@ function gameScreen() {
     sideWalk.collider = "static";
   }
 
+  // Check if the player is outside the canvas boundaries
+  if (player.position.x < 0 || player.position.x > width ||
+      player.position.y < 0 || player.position.y > height) {
+    // Player ran off the canvas, transition to a new screen (screen 2, for example)
+    screen = 2;
+  }
+
   // Draw game elements here
   image(cityImg, 0, 0, 630, 500);
   if (kb.pressing("left")) {
@@ -88,19 +94,11 @@ function gameScreen() {
       "Well designed and consistent sidewalks help people walk to their destinations safely and efficiently";
   }
 
-  function drawScore() {
-    fill(0);
-    textAlign(LEFT);
-    textSize(15);
-    text("Score:" + score, 10, 20);
-  }
-}
-
 function menuScreen() {
-  background("blue");
+  background("black");
   textAlign(CENTER);
-  text("CLICK ANYWHERE TO START");
-  stroke("white");
+  text("CLICK ANYWHERE TO START", 300, 265);
+  fill("white");
 }
 
 function mousePressed() {
