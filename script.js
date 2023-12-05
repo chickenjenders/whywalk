@@ -14,10 +14,13 @@ function preload() {
   cityImg = loadImage("assets/city.png", {
     frameSize: [630, 500],
   });
+  busImg = loadImage("assets/bus.png", {
+    frameSize: [256, 256],
+  });
 }
 
 function setup() {
-  createCanvas(630, 600);
+  createCanvas(630, 580);
 }
 
 function draw() {
@@ -38,6 +41,7 @@ function gameScreen() {
     player.diameter = 50;
     player.rotationLock = true;
     player.text = "Player";
+    camera.x = player.x;
 
     textArea = new Sprite();
     textArea.w = 630;
@@ -48,9 +52,9 @@ function gameScreen() {
     textArea.textSize = 17;
     textArea.text = "How can cities become more walkable?";
 
-    bus = createSprite(258, 231, 96, 17);
+    bus = createSprite(270, 231, 96, 17);
     bus.collider = "static";
-    bus.color = "white";
+    bus.image = busImg;
 
     sideWalk = createSprite(200, 470, 17, 16);
     sideWalk.color = "#BAC0D0";
@@ -58,15 +62,32 @@ function gameScreen() {
   }
 
   // Check if the player is outside the canvas boundaries
-  if (
-    player.position.x < 0 ||
-    player.position.x > width ||
-    player.position.y < 0 ||
-    player.position.y > height
-  ) {
-    // Player ran off the canvas, transition to a new screen (screen 2, for example)
-    screen = 2;
+  if (player.position.x < 0) {
+    // Player went to the left side of the screen
+    screenTwo();
+    bus.remove();
+    sideWalk.remove();
+    player.position.x = 625;
+  } else if (player.position.x > width) {
+    // Player went to the right side of the screen
+    screenThree();
+    bus.remove();
+    sideWalk.remove();
+    player.position.x = 0;
   }
+
+  if (player.position.y < 0) {
+    // Player went to the upper side of the screen
+    screenFour();
+    bus.remove();
+    sideWalk.remove();
+    player.position.y = 525;
+  } else if (player.position.y > height) {
+    // Player went to the lower side of the screen
+    gameScreen();
+    player.position.y = 105;
+  }
+  // Player ran off the canvas, transition to a new screen (screen 2, for example)
 
   // Draw game elements here
   image(cityImg, 0, 0, 630, 500);
@@ -113,6 +134,41 @@ function startGame() {
   screen = 1;
 }
 
+function screenTwo() {
+  textArea = new Sprite();
+  textArea.w = 630;
+  textArea.h = 100;
+  textArea.y = 530;
+  textArea.color = "#D0D3D4";
+  textArea.collider = "static";
+  textArea.textSize = 17;
+  textArea.text = "Where to next?";
+}
+
+function screenThree() {
+  textArea = new Sprite();
+  textArea.w = 630;
+  textArea.h = 100;
+  textArea.y = 530;
+  textArea.color = "#D0D3D4";
+  textArea.collider = "static";
+  textArea.textSize = 17;
+  textArea.text = "Where to next?";
+}
+function screenFour() {
+  textArea = new Sprite();
+  textArea.w = 630;
+  textArea.h = 100;
+  textArea.y = 530;
+  textArea.color = "#D0D3D4";
+  textArea.collider = "static";
+  textArea.textSize = 17;
+  textArea.text = "Where to next?";
+}
+
 function endScreen() {
-  // Your end screen code here
+  background("black");
+  textAlign(CENTER);
+  text("YOU FIXED THE CITY", 300, 265);
+  fill("white");
 }
