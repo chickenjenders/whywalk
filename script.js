@@ -33,36 +33,36 @@ let state = {
 };
 
 function drawSideWalk() {
-  sideWalk = createSprite(200, 470, 17, 16);
-  sideWalk.color = "#BAC0D0";
-  sideWalk.img = sideWalkImg;
+  sideWalk = createSprite(200, 555, 77, 26);
+  sideWalk.image = sideWalkImg;
+  sideWalk.collider = "static";
 }
 
 function drawBus() {
-  bus = createSprite(258, 229, 95, 20);
+  bus = createSprite(270, 255, 95, 20);
   bus.collider = "static";
-  bus.img = busImg;
+  bus.image = busImg;
 }
 
 function drawAir() {
-  air = createSprite(200, 180, 85, 20);
+  air = createSprite(190, 150, 85, 20);
   air.image = airImg;
   air.collider = "static";
 }
 function drawCrossWalk() {
-  crossWalk = createSprite(458, 229, 175, 20);
+  crossWalk = createSprite(450, 160, 175, 20);
   crossWalk.collider = "static";
-  crossWalk.img = crossWalkImg;
+  crossWalk.image = crossWalkImg;
 }
 function drawSpeedBump() {
-  speedBump = createSprite(458, 229, 175, 20);
+  speedBump = createSprite(400, 325, 175, 20);
   speedBump.collider = "static";
-  speedBump.img = speedBumpImg;
+  speedBump.image = speedBumpImg;
 }
 function drawLamp() {
   lamp = createSprite(255, 400, 175, 20);
   lamp.collider = "static";
-  lamp.img = lampImg;
+  lamp.image = lampImg;
 }
 
 function drawTextArea(text) {
@@ -74,6 +74,9 @@ function drawTextArea(text) {
   textArea.collider = "static";
   textArea.textSize = 17;
   textArea.text = text;
+  //textArea.textWrap(WORD);
+  //textArea.textAlign(LEFT, TOP);
+  //textArea.textLeading(20);
 }
 
 function preload() {
@@ -115,6 +118,7 @@ function setup() {
   player = new Sprite();
   player.addAni("walk", playerImg, 6);
   player.diameter = 50;
+  player.collider = "kinematic";
   player.rotationLock = true;
   player.text = "Player";
 }
@@ -184,6 +188,8 @@ function screenOne() {
     screen = 2;
     player.position.x = 625;
     bus.remove();
+    busTwo.remove();
+    speedBumpTwo.remove();
     sideWalk.remove();
     drawAir();
     drawCrossWalk();
@@ -193,6 +199,7 @@ function screenOne() {
     screen = 3;
     player.position.x = 0;
     bus.remove();
+    busTwo.remove();
     sideWalk.remove();
     drawSpeedBump();
     drawLamp();
@@ -207,33 +214,28 @@ function screenOne() {
     player.position.x - bus.position.x,
     player.position.y - bus.position.y
   );
-  if (bus.mouse.presses() && distanceB < 50) {
-    console.log("yo");
+  if (mouse.presses() && distanceB < 50) {
     textArea.text = "Much better!";
     bus.remove();
-    busTwo = createSprite(115, 221, 96, 25);
+    busTwo = createSprite(110, 240, 96, 25);
     busTwo.collider = "static";
     busTwo.image = newBusImg;
     state.bus = 2;
-    console.log(score);
   } else if (distanceB < 50 && interactedWithB == false) {
     textArea.text =
       "Public transportation allows travel for all people in a more eco-friendly and convenient way. Click to fix!";
     interactedWithB = true;
     state.bus = 1;
-  } else if (sideWalk.mouse.presses() && distanceSW < 50) {
-    console.log("yo");
+  } else if (mouse.presses() && distanceSW < 80) {
     textArea.text = "Much better!";
     sideWalk.remove();
     state.sideWalk = 2;
-  } else if (distanceSW < 50 && state.sideWalk == 0) {
-    console.log("yeet");
+  } else if (distanceSW < 80 && state.sideWalk == 0) {
     textArea.text =
       "Well designed and consistent sidewalks help people walk to their destinations safely and efficiently. Click to fix!";
     state.sideWalk = 1;
   }
   if (state.sideWalk == 2 && state.bus == 2) {
-    console.log("ajhkh");
     textArea.text = "All areas have been fixed here!";
   }
 }
@@ -251,9 +253,8 @@ function menuScreen() {
   if (mouseIsPressed) {
     screen = 1;
     drawScreenOneSprite();
-    drawTextArea("How can cities become more walkable?", 0, 0, 100);
+    drawTextArea("How can the city be more walkable?");
     textArea.textSize = 14;
-    textArea.textWrap(WORD);
   }
 }
 
@@ -277,27 +278,25 @@ function screenTwo() {
     player.position.x - crossWalk.position.x,
     player.position.y - crossWalk.position.y
   );
-  if (crossWalk.mouse.presses() && distanceCW < 50) {
+  if (mouse.presses() && distanceCW < 50) {
     textArea.text = "Much better!";
     crossWalk.remove();
     state.crossWalk = 2;
-    console.log(score);
   } else if (distanceCW < 50 && interactedWithCW == false) {
     textArea.text =
       "Cross walks allow easier and safer areas for people to walk around streets and towns. Click to fix!";
     interactedWithCW = true;
     state.crossWalk = 1;
-  } else if (air.mouse.presses() && distanceAir < 50) {
+  } else if (mouse.presses() && distanceAir < 60) {
     textArea.text = "Much better!";
     air.remove();
     state.air = 2;
-  } else if (distanceAir < 50 && state.air == 0) {
+  } else if (distanceAir < 60 && state.air == 0) {
     textArea.text =
       "Decreasing pollution improves air quality and provides a safer and cleaner environment to walk around.  Click to fix!";
     state.air = 1;
   }
   if (state.crossWalk == 2 && state.air == 2) {
-    console.log("ajhkh");
     textArea.text = "All areas have been fixed here!";
   }
 }
@@ -308,6 +307,8 @@ function screenThree() {
     screen = 1;
     player.position.x = 625;
     drawScreenOneSprite();
+    lamp.remove();
+    speedBump.remove();
   }
   const distanceSB = calcPoints(
     player.position.x - speedBump.position.x,
@@ -317,18 +318,18 @@ function screenThree() {
     player.position.x - lamp.position.x,
     player.position.y - lamp.position.y
   );
-  if (lamp.mouse.presses() && distanceL < 50) {
+  if (mouse.presses() && distanceL < 50) {
     textArea.text = "Much better!";
     lamp.remove();
     state.lamp = 2;
   } else if (distanceL < 50 && interactedWithL == false) {
     textArea.text =
-      "Well-lit sidewalks and crosswalks help pedestrians navigate their surroundings with ease, reducing the risk of accidents. Click to fix!";
+      "Well-lit sidewalks help pedestrians navigate and reduce the risk of accidents. Click to fix!";
     interactedWithL = true;
-    state.bus = 1;
-  } else if (speedBump.mouse.presses() && distanceSB < 50) {
+    state.lamp = 1;
+  } else if (mouse.presses() && distanceSB < 50) {
     textArea.text = "Much better!";
-    speedTwo = createSprite(115, 221, 96, 25);
+    speedTwo = createSprite(450, 245, 96, 25);
     speedTwo.collider = "static";
     speedTwo.image = newBumpImg;
     state.speedBump = 2;
