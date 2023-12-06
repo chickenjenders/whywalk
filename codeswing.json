@@ -1,7 +1,9 @@
 {
   "scripts": [
-    "https://cdnjs.cloudflare.com/ajax/libs/p5play/3.17.1/p5play.js"
+    "./script.mjs",
+    "https://cdnjs.cloudflare.com/ajax/libs/p5play/3.17.1/p5play.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/p5play/3.17.9/p5play.js"
   ],
   "styles": [],
   "showConsole": true
-}``
+}

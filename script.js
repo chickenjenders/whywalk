@@ -1,10 +1,46 @@
-let player;
 let cityImg;
 let textArea;
 let bus;
 let sideWalk;
 let score = 0;
 let screen = 0;
+let air;
+let interactedWithSW = false;
+let busTwo;
+let interactedWithB = false;
+//0 (uninteracted) 1 (interacted) 2 (fixed)
+let state = {
+  bus: 0,
+  sideWalk: 0,
+};
+
+function drawSideWalk() {
+  sideWalk = createSprite(200, 470, 17, 16);
+  sideWalk.color = "#BAC0D0";
+  sideWalk.collider = "static";
+}
+
+function drawBus() {
+  bus = createSprite(258, 229, 95, 20);
+  bus.collider = "static";
+  bus.color = "white";
+}
+
+function drawAir() {
+  air = createSprite(100, 580, 85, 20);
+  air.image = airImg;
+}
+
+function drawTextArea(text) {
+  textArea = new Sprite();
+  textArea.w = 630;
+  textArea.h = 100;
+  textArea.y = 530;
+  textArea.color = "#D0D3D4";
+  textArea.collider = "static";
+  textArea.textSize = 17;
+  textArea.text = text;
+}
 
 function preload() {
   playerImg = loadAnimation("assets/Walk.png", {
@@ -17,80 +53,39 @@ function preload() {
   busImg = loadImage("assets/bus.png", {
     frameSize: [256, 256],
   });
+  airImg = loadImage("assets/air.png", {
+    frameSize: [256, 256],
+  });
 }
 
 function setup() {
   createCanvas(630, 580);
+  player = new Sprite();
+  player.addAni("walk", playerImg, 6);
+  player.diameter = 50;
+  player.rotationLock = true;
+  player.text = "Player";
 }
 
 function draw() {
-  if (screen == 0) {
-    menuScreen();
-  } else if (screen == 1) {
-    gameScreen();
-  } else if (screen == 2) {
-    endScreen();
-  }
-}
-
-function gameScreen() {
-  // Create the player and NPC only when the game starts (screen == 1)
-  if (!player) {
-    player = new Sprite();
-    player.addAni("walk", playerImg, 6);
-    player.diameter = 50;
-    player.rotationLock = true;
-    player.text = "Player";
-    camera.x = player.x;
-
-    textArea = new Sprite();
-    textArea.w = 630;
-    textArea.h = 100;
-    textArea.y = 530;
-    textArea.color = "#D0D3D4";
-    textArea.collider = "static";
-    textArea.textSize = 17;
-    textArea.text = "How can cities become more walkable?";
-
-    bus = createSprite(270, 231, 96, 17);
-    bus.collider = "static";
-    bus.image = busImg;
-
-    sideWalk = createSprite(200, 470, 17, 16);
-    sideWalk.color = "#BAC0D0";
-    sideWalk.collider = "static";
+  switch (screen) {
+    case 0:
+      menuScreen();
+      break;
+    case 1:
+      screenOne();
+      break;
+    case 2:
+      screenTwo();
+      break;
+    case 3:
+      screenThree();
+      break;
+    case 4:
+      endScreen();
+      break;
   }
 
-  // Check if the player is outside the canvas boundaries
-  if (player.position.x < 0) {
-    // Player went to the left side of the screen
-    screenTwo();
-    bus.remove();
-    sideWalk.remove();
-    player.position.x = 625;
-  } else if (player.position.x > width) {
-    // Player went to the right side of the screen
-    screenThree();
-    bus.remove();
-    sideWalk.remove();
-    player.position.x = 0;
-  }
-
-  if (player.position.y < 0) {
-    // Player went to the upper side of the screen
-    screenFour();
-    bus.remove();
-    sideWalk.remove();
-    player.position.y = 525;
-  } else if (player.position.y > height) {
-    // Player went to the lower side of the screen
-    gameScreen();
-    player.position.y = 105;
-  }
-  // Player ran off the canvas, transition to a new screen (screen 2, for example)
-
-  // Draw game elements here
-  image(cityImg, 0, 0, 630, 500);
   if (kb.pressing("left")) {
     player.vel.x = -1.5;
   } else if (kb.pressing("right")) {
@@ -104,17 +99,74 @@ function gameScreen() {
     player.vel.x = 0;
   }
 
-  if (player.colliding(bus)) {
-    textArea.textSize = 14;
-    textArea.text =
-      "Public transportation allows travel for all people in a more eco-friendly and convenient way.";
+  if (score == 6) {
+    endScreen();
   }
+}
+function drawScreenOneSprite() {
+  if (!interactedWithSW) drawSideWalk();
+  drawBus();
+}
 
-  if (player.colliding(sideWalk)) {
-    textArea.textSize = 14;
-    textArea.text =
-      "Well designed and consistent sidewalks help people walk to their destinations safely and efficiently";
+function screenOne() {
+  // Check if the player is outside the canvas boundaries
+  if (player.position.x < 0) {
+    // Player went to the left side of the screen
+    screen = 2;
+    player.position.x = 625;
+    bus.remove();
+    sideWalk.remove();
+    drawAir();
+    textArea.text = "Where to next?";
+  } else if (player.position.x > width) {
+    // Player went to the right side of the screen
+    screen = 3;
+    player.position.x = 0;
+    bus.remove();
+    sideWalk.remove();
   }
+  image(cityImg, 0, 0, 630, 500);
+  const distanceSW = calcPoints(
+    player.position.x - sideWalk.position.x,
+    player.position.y - sideWalk.position.y
+  );
+  const distanceB = calcPoints(
+    player.position.x - bus.position.x,
+    player.position.y - bus.position.y
+  );
+  if (bus.mouse.presses() && distanceB < 50) {
+    console.log("yo");
+    textArea.text = "Much better!";
+    bus.remove();
+    busTwo = createSprite(115, 221, 96, 25);
+    busTwo.collider = "static";
+    busTwo.image = busImg;
+    state.bus = 2;
+    console.log(score);
+  } else if (distanceB < 50 && interactedWithB == false) {
+    textArea.text =
+      "Public transportation allows travel for all people in a more eco-friendly and convenient way. Click to fix!";
+    interactedWithB = true;
+    state.bus = 1;
+  } else if (sideWalk.mouse.presses() && distanceSW < 50) {
+    console.log("yo");
+    textArea.text = "Much better!";
+    sideWalk.remove();
+    state.sideWalk = 2;
+  } else if (distanceSW < 50 && state.sideWalk == 0) {
+    console.log("yeet");
+    textArea.text =
+      "Well designed and consistent sidewalks help people walk to their destinations safely and efficiently. Click to fix!";
+    state.sideWalk = 1;
+  }
+  if (state.sideWalk == 2 && state.bus == 2) {
+    console.log("ajhkh");
+    textArea.text = "All areas have been fixed here!";
+  }
+}
+
+function calcPoints(a, b) {
+  return Math.sqrt(a * a + b * b);
 }
 
 function menuScreen() {
@@ -122,51 +174,39 @@ function menuScreen() {
   textAlign(CENTER);
   text("CLICK ANYWHERE TO START", 300, 265);
   fill("white");
-}
 
-function mousePressed() {
-  if (screen == 0) {
-    startGame();
+  if (mouseIsPressed) {
+    screen = 1;
+    drawScreenOneSprite();
+    drawTextArea("How can cities become more walkable?");
+    textArea.textSize = 14;
   }
 }
 
-function startGame() {
-  screen = 1;
-}
-
 function screenTwo() {
-  textArea = new Sprite();
-  textArea.w = 630;
-  textArea.h = 100;
-  textArea.y = 530;
-  textArea.color = "#D0D3D4";
-  textArea.collider = "static";
-  textArea.textSize = 17;
-  textArea.text = "Where to next?";
+  image(cityImg, 0, 0, 630, 500);
+
+  if (player.position.x > width) {
+    // Player went to the right side of the screen
+    screen = 1;
+    player.position.x = 0;
+    drawScreenOneSprite();
+    textArea.text = "I'm back bitches";
+    air.remove();
+  }
 }
 
 function screenThree() {
-  textArea = new Sprite();
-  textArea.w = 630;
-  textArea.h = 100;
-  textArea.y = 530;
-  textArea.color = "#D0D3D4";
-  textArea.collider = "static";
-  textArea.textSize = 17;
-  textArea.text = "Where to next?";
-}
-function screenFour() {
-  textArea = new Sprite();
-  textArea.w = 630;
-  textArea.h = 100;
-  textArea.y = 530;
-  textArea.color = "#D0D3D4";
-  textArea.collider = "static";
-  textArea.textSize = 17;
-  textArea.text = "Where to next?";
+  image(cityImg, 0, 0, 630, 500);
+  if (player.position.x < 0) {
+    screen = 1;
+    player.position.x = 625;
+    drawScreenOneSprite();
+  }
 }
 
 function endScreen() {
+  screen = 4;
   background("black");
   textAlign(CENTER);
   text("YOU FIXED THE CITY", 300, 265);
