@@ -189,7 +189,6 @@ function screenOne() {
     player.position.x = 625;
     bus.remove();
     busTwo.remove();
-    speedBumpTwo.remove();
     sideWalk.remove();
     drawAir();
     drawCrossWalk();
@@ -226,11 +225,11 @@ function screenOne() {
       "Public transportation allows travel for all people in a more eco-friendly and convenient way. Click to fix!";
     interactedWithB = true;
     state.bus = 1;
-  } else if (mouse.presses() && distanceSW < 80) {
+  } else if (mouse.presses() && distanceSW < 150) {
     textArea.text = "Much better!";
     sideWalk.remove();
     state.sideWalk = 2;
-  } else if (distanceSW < 80 && state.sideWalk == 0) {
+  } else if (distanceSW < 150 && state.sideWalk == 0) {
     textArea.text =
       "Well designed and consistent sidewalks help people walk to their destinations safely and efficiently. Click to fix!";
     state.sideWalk = 1;
