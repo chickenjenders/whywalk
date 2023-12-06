@@ -188,7 +188,6 @@ function screenOne() {
     screen = 2;
     player.position.x = 625;
     bus.remove();
-    busTwo.remove();
     sideWalk.remove();
     drawAir();
     drawCrossWalk();
@@ -277,13 +276,13 @@ function screenTwo() {
     player.position.x - crossWalk.position.x,
     player.position.y - crossWalk.position.y
   );
-  if (mouse.presses() && distanceCW < 50) {
+  if (mouse.presses() && distanceCW < 80) {
     textArea.text = "Much better!";
     crossWalk.remove();
     state.crossWalk = 2;
-  } else if (distanceCW < 50 && interactedWithCW == false) {
+  } else if (distanceCW < 80 && interactedWithCW == false) {
     textArea.text =
-      "Cross walks allow easier and safer areas for people to walk around streets and towns. Click to fix!";
+      "Cross walks improve visibility, speed is reduced, and pedestrians are kept safe. Click to fix!";
     interactedWithCW = true;
     state.crossWalk = 1;
   } else if (mouse.presses() && distanceAir < 60) {
@@ -292,7 +291,7 @@ function screenTwo() {
     state.air = 2;
   } else if (distanceAir < 60 && state.air == 0) {
     textArea.text =
-      "Decreasing pollution improves air quality and provides a safer and cleaner environment to walk around.  Click to fix!";
+      "Less pollution improves air quality and provides a cleaner environment to walk around.  Click to fix!";
     state.air = 1;
   }
   if (state.crossWalk == 2 && state.air == 2) {
@@ -334,7 +333,7 @@ function screenThree() {
     state.speedBump = 2;
   } else if (distanceSB < 50 && state.speedBump == 0) {
     textArea.text =
-      "Implementing traffic-calming measures such as speed bumps ensure pedestrian safety. Click to fix!";
+      "Implementing speed bumps calms traffic and ensures pedestrian safety. Click to fix!";
     state.speedBump = 1;
   }
   if (state.speedBump == 2 && state.lamp == 2) {
