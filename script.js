@@ -1,30 +1,47 @@
 let cityImg;
+let airImg;
+let busImg;
+let sideWalkImg;
+let crossWalkImg;
+let speedBumpImg;
+let newBumpImg;
+let lampImg;
 let textArea;
 let bus;
 let sideWalk;
-let score = 0;
 let screen = 0;
 let air;
 let crossWalk;
+let speedBump;
+let lamp;
 let interactedWithSW = false;
 let busTwo;
+let speedBumpTwo;
 let interactedWithB = false;
+let interactedWithL = false;
+let interactedWithSB = false;
+let interactedWithCW = false;
+let interactedWithAir = false;
 //0 (uninteracted) 1 (interacted) 2 (fixed)
 let state = {
   bus: 0,
   sideWalk: 0,
+  air: 0,
+  crossWalk: 0,
+  lamp: 0,
+  speedBump: 0,
 };
 
 function drawSideWalk() {
   sideWalk = createSprite(200, 470, 17, 16);
   sideWalk.color = "#BAC0D0";
-  sideWalk.collider = "static";
+  sideWalk.img = sideWalkImg;
 }
 
 function drawBus() {
   bus = createSprite(258, 229, 95, 20);
   bus.collider = "static";
-  bus.color = "white";
+  bus.img = busImg;
 }
 
 function drawAir() {
@@ -35,7 +52,17 @@ function drawAir() {
 function drawCrossWalk() {
   crossWalk = createSprite(458, 229, 175, 20);
   crossWalk.collider = "static";
-  crossWalk.color = "gray";
+  crossWalk.img = crossWalkImg;
+}
+function drawSpeedBump() {
+  speedBump = createSprite(458, 229, 175, 20);
+  speedBump.collider = "static";
+  speedBump.img = speedBumpImg;
+}
+function drawLamp() {
+  lamp = createSprite(255, 400, 175, 20);
+  lamp.collider = "static";
+  lamp.img = lampImg;
 }
 
 function drawTextArea(text) {
@@ -60,7 +87,25 @@ function preload() {
   busImg = loadImage("assets/bus.png", {
     frameSize: [256, 256],
   });
+  newBusImg = loadImage("assets/bus2.png", {
+    frameSize: [256, 256],
+  });
   airImg = loadImage("assets/air.png", {
+    frameSize: [256, 256],
+  });
+  sideWalkImg = loadImage("assets/sidewalk.png", {
+    frameSize: [256, 256],
+  });
+  speedBumpImg = loadImage("assets/speedbump.png", {
+    frameSize: [256, 256],
+  });
+  newBumpImg = loadImage("assets/speedbump2.png", {
+    frameSize: [256, 256],
+  });
+  lampImg = loadImage("assets/lamp.png", {
+    frameSize: [256, 256],
+  });
+  crossWalkImg = loadImage("assets/crosswalk.png", {
     frameSize: [256, 256],
   });
 }
@@ -106,14 +151,30 @@ function draw() {
     player.vel.x = 0;
   }
 
-  if (score == 6) {
+  if (
+    state.sideWalk == 2 &&
+    state.bus == 2 &&
+    state.crossWalk == 2 &&
+    state.air == 2 &&
+    state.speedBump == 2 &&
+    state.lamp == 2
+  ) {
     endScreen();
+    allSprites.remove();
   }
 }
 
 function drawScreenOneSprite() {
   if (state.sideWalk != 2) drawSideWalk();
   if (state.bus != 2) drawBus();
+}
+function drawScreenTwoSprite() {
+  if (state.crossWalk != 2) drawCrossWalk();
+  if (state.air != 2) drawAir();
+}
+function drawScreenThreeSprite() {
+  if (state.speedBump != 2) drawSpeedBump();
+  if (state.lamp != 2) drawLamp();
 }
 
 function screenOne() {
@@ -133,6 +194,9 @@ function screenOne() {
     player.position.x = 0;
     bus.remove();
     sideWalk.remove();
+    drawSpeedBump();
+    drawLamp();
+    textArea.text = "Where to next?";
   }
   image(cityImg, 0, 0, 630, 500);
   const distanceSW = calcPoints(
@@ -149,7 +213,7 @@ function screenOne() {
     bus.remove();
     busTwo = createSprite(115, 221, 96, 25);
     busTwo.collider = "static";
-    busTwo.image = busImg;
+    busTwo.image = newBusImg;
     state.bus = 2;
     console.log(score);
   } else if (distanceB < 50 && interactedWithB == false) {
@@ -187,8 +251,9 @@ function menuScreen() {
   if (mouseIsPressed) {
     screen = 1;
     drawScreenOneSprite();
-    drawTextArea("How can cities become more walkable?");
+    drawTextArea("How can cities become more walkable?", 0, 0, 100);
     textArea.textSize = 14;
+    textArea.textWrap(WORD);
   }
 }
 
@@ -204,6 +269,37 @@ function screenTwo() {
     air.remove();
     crossWalk.remove();
   }
+  const distanceAir = calcPoints(
+    player.position.x - air.position.x,
+    player.position.y - air.position.y
+  );
+  const distanceCW = calcPoints(
+    player.position.x - crossWalk.position.x,
+    player.position.y - crossWalk.position.y
+  );
+  if (crossWalk.mouse.presses() && distanceCW < 50) {
+    textArea.text = "Much better!";
+    crossWalk.remove();
+    state.crossWalk = 2;
+    console.log(score);
+  } else if (distanceCW < 50 && interactedWithCW == false) {
+    textArea.text =
+      "Cross walks allow easier and safer areas for people to walk around streets and towns. Click to fix!";
+    interactedWithCW = true;
+    state.crossWalk = 1;
+  } else if (air.mouse.presses() && distanceAir < 50) {
+    textArea.text = "Much better!";
+    air.remove();
+    state.air = 2;
+  } else if (distanceAir < 50 && state.air == 0) {
+    textArea.text =
+      "Decreasing pollution improves air quality and provides a safer and cleaner environment to walk around.  Click to fix!";
+    state.air = 1;
+  }
+  if (state.crossWalk == 2 && state.air == 2) {
+    console.log("ajhkh");
+    textArea.text = "All areas have been fixed here!";
+  }
 }
 
 function screenThree() {
@@ -213,12 +309,43 @@ function screenThree() {
     player.position.x = 625;
     drawScreenOneSprite();
   }
+  const distanceSB = calcPoints(
+    player.position.x - speedBump.position.x,
+    player.position.y - speedBump.position.y
+  );
+  const distanceL = calcPoints(
+    player.position.x - lamp.position.x,
+    player.position.y - lamp.position.y
+  );
+  if (lamp.mouse.presses() && distanceL < 50) {
+    textArea.text = "Much better!";
+    lamp.remove();
+    state.lamp = 2;
+  } else if (distanceL < 50 && interactedWithL == false) {
+    textArea.text =
+      "Well-lit sidewalks and crosswalks help pedestrians navigate their surroundings with ease, reducing the risk of accidents. Click to fix!";
+    interactedWithL = true;
+    state.bus = 1;
+  } else if (speedBump.mouse.presses() && distanceSB < 50) {
+    textArea.text = "Much better!";
+    speedTwo = createSprite(115, 221, 96, 25);
+    speedTwo.collider = "static";
+    speedTwo.image = newBumpImg;
+    state.speedBump = 2;
+  } else if (distanceSB < 50 && state.speedBump == 0) {
+    textArea.text =
+      "Implementing traffic-calming measures such as speed bumps ensure pedestrian safety. Click to fix!";
+    state.speedBump = 1;
+  }
+  if (state.speedBump == 2 && state.lamp == 2) {
+    textArea.text = "All areas have been fixed here!";
+  }
 }
 
 function endScreen() {
   screen = 4;
   background("black");
   textAlign(CENTER);
-  text("YOU FIXED THE CITY", 300, 265);
+  text("YAY! THE CITY HAS IMPROVED ITS WALKABILITY", 300, 265);
   fill("white");
 }
