@@ -5,6 +5,7 @@ let sideWalk;
 let score = 0;
 let screen = 0;
 let air;
+let crossWalk;
 let interactedWithSW = false;
 let busTwo;
 let interactedWithB = false;
@@ -27,8 +28,14 @@ function drawBus() {
 }
 
 function drawAir() {
-  air = createSprite(100, 580, 85, 20);
+  air = createSprite(200, 180, 85, 20);
   air.image = airImg;
+  air.collider = "static";
+}
+function drawCrossWalk() {
+  crossWalk = createSprite(458, 229, 175, 20);
+  crossWalk.collider = "static";
+  crossWalk.color = "gray";
 }
 
 function drawTextArea(text) {
@@ -103,9 +110,10 @@ function draw() {
     endScreen();
   }
 }
+
 function drawScreenOneSprite() {
-  if (!interactedWithSW) drawSideWalk();
-  drawBus();
+  if (state.sideWalk != 2) drawSideWalk();
+  if (state.bus != 2) drawBus();
 }
 
 function screenOne() {
@@ -117,6 +125,7 @@ function screenOne() {
     bus.remove();
     sideWalk.remove();
     drawAir();
+    drawCrossWalk();
     textArea.text = "Where to next?";
   } else if (player.position.x > width) {
     // Player went to the right side of the screen
@@ -191,8 +200,9 @@ function screenTwo() {
     screen = 1;
     player.position.x = 0;
     drawScreenOneSprite();
-    textArea.text = "I'm back bitches";
+    textArea.text = "Where to next?";
     air.remove();
+    crossWalk.remove();
   }
 }
 
