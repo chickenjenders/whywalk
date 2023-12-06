@@ -14,14 +14,8 @@ let air;
 let crossWalk;
 let speedBump;
 let lamp;
-let interactedWithSW = false;
 let busTwo;
 let speedBumpTwo;
-let interactedWithB = false;
-let interactedWithL = false;
-let interactedWithSB = false;
-let interactedWithCW = false;
-let interactedWithAir = false;
 
 //0 (uninteracted) 1 (interacted) 2 (fixed)
 let state = {
@@ -81,9 +75,6 @@ function drawTextArea(text) {
   textArea.collider = "static";
   textArea.textSize = 17;
   textArea.text = text;
-  //textArea.textWrap(WORD);
-  //textArea.textAlign(LEFT, TOP);
-  //textArea.textLeading(20);
 }
 
 function preload() {
@@ -245,7 +236,7 @@ function screenOne() {
       "Well designed sidewalks help people walk to their destinations safely and efficiently. Click to fix!";
     state.sideWalk = 1;
   }
-  if (state.sideWalk == 2 && state.bus == 2) {
+  if (state.sideWalk == 2 && state.bus == 2 && screen != 2 && screen != 3) {
     textArea.text = "All areas have been fixed here!";
   }
 }
