@@ -276,11 +276,11 @@ function screenTwo() {
     player.position.x - crossWalk.position.x,
     player.position.y - crossWalk.position.y
   );
-  if (mouse.presses() && distanceCW < 80) {
+  if (mouse.presses() && distanceCW < 100) {
     textArea.text = "Much better!";
     crossWalk.remove();
     state.crossWalk = 2;
-  } else if (distanceCW < 80 && interactedWithCW == false) {
+  } else if (distanceCW < 100 && interactedWithCW == false) {
     textArea.text =
       "Cross walks improve visibility, speed is reduced, and pedestrians are kept safe. Click to fix!";
     interactedWithCW = true;
