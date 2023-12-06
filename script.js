@@ -22,6 +22,7 @@ let interactedWithL = false;
 let interactedWithSB = false;
 let interactedWithCW = false;
 let interactedWithAir = false;
+
 //0 (uninteracted) 1 (interacted) 2 (fixed)
 let state = {
   bus: 0,
@@ -42,6 +43,12 @@ function drawBus() {
   bus = createSprite(270, 255, 95, 20);
   bus.collider = "static";
   bus.image = busImg;
+}
+
+function drawBusTwo() {
+  busTwo = createSprite(110, 240, 96, 25);
+  busTwo.collider = "static";
+  busTwo.image = newBusImg;
 }
 
 function drawAir() {
@@ -144,12 +151,16 @@ function draw() {
 
   if (kb.pressing("left")) {
     player.vel.x = -1.5;
+    player.vel.y = 0;
   } else if (kb.pressing("right")) {
     player.vel.x = 1.5;
+    player.vel.y = 0;
   } else if (kb.pressing("up")) {
     player.vel.y = -1.5;
+    player.vel.x = 0;
   } else if (kb.pressing("down")) {
     player.vel.y = 1.5;
+    player.vel.x = 0;
   } else {
     player.vel.y = 0;
     player.vel.x = 0;
@@ -171,6 +182,7 @@ function draw() {
 function drawScreenOneSprite() {
   if (state.sideWalk != 2) drawSideWalk();
   if (state.bus != 2) drawBus();
+  if (state.bus == 2) drawBusTwo();
 }
 function drawScreenTwoSprite() {
   if (state.crossWalk != 2) drawCrossWalk();
@@ -187,20 +199,23 @@ function screenOne() {
     // Player went to the left side of the screen
     screen = 2;
     player.position.x = 625;
+    drawScreenTwoSprite();
     bus.remove();
+    if (state.bus == 2) {
+      busTwo.remove();
+    }
     sideWalk.remove();
-    drawAir();
-    drawCrossWalk();
     textArea.text = "Where to next?";
   } else if (player.position.x > width) {
     // Player went to the right side of the screen
     screen = 3;
     player.position.x = 0;
     bus.remove();
-    busTwo.remove();
+    if (state.bus == 2) {
+      busTwo.remove();
+    }
     sideWalk.remove();
-    drawSpeedBump();
-    drawLamp();
+    drawScreenThreeSprite();
     textArea.text = "Where to next?";
   }
   image(cityImg, 0, 0, 630, 500);
@@ -215,14 +230,11 @@ function screenOne() {
   if (mouse.presses() && distanceB < 50) {
     textArea.text = "Much better!";
     bus.remove();
-    busTwo = createSprite(110, 240, 96, 25);
-    busTwo.collider = "static";
-    busTwo.image = newBusImg;
+    drawBusTwo();
     state.bus = 2;
-  } else if (distanceB < 50 && interactedWithB == false) {
+  } else if (distanceB < 50 && state.bus == 0) {
     textArea.text =
-      "Public transportation allows travel for all people in a more eco-friendly and convenient way. Click to fix!";
-    interactedWithB = true;
+      "Public transportation allows travel for citizens in a more eco-friendly and convenient way. Click to fix!";
     state.bus = 1;
   } else if (mouse.presses() && distanceSW < 150) {
     textArea.text = "Much better!";
@@ -230,7 +242,7 @@ function screenOne() {
     state.sideWalk = 2;
   } else if (distanceSW < 150 && state.sideWalk == 0) {
     textArea.text =
-      "Well designed and consistent sidewalks help people walk to their destinations safely and efficiently. Click to fix!";
+      "Well designed sidewalks help people walk to their destinations safely and efficiently. Click to fix!";
     state.sideWalk = 1;
   }
   if (state.sideWalk == 2 && state.bus == 2) {
@@ -280,10 +292,9 @@ function screenTwo() {
     textArea.text = "Much better!";
     crossWalk.remove();
     state.crossWalk = 2;
-  } else if (distanceCW < 100 && interactedWithCW == false) {
+  } else if (distanceCW < 100 && state.crossWalk == 0) {
     textArea.text =
       "Cross walks improve visibility, speed is reduced, and pedestrians are kept safe. Click to fix!";
-    interactedWithCW = true;
     state.crossWalk = 1;
   } else if (mouse.presses() && distanceAir < 60) {
     textArea.text = "Much better!";
@@ -320,18 +331,17 @@ function screenThree() {
     textArea.text = "Much better!";
     lamp.remove();
     state.lamp = 2;
-  } else if (distanceL < 50 && interactedWithL == false) {
+  } else if (distanceL < 50 && state.lamp == 0) {
     textArea.text =
       "Well-lit sidewalks help pedestrians navigate and reduce the risk of accidents. Click to fix!";
-    interactedWithL = true;
     state.lamp = 1;
-  } else if (mouse.presses() && distanceSB < 50) {
+  } else if (mouse.presses() && distanceSB < 80) {
     textArea.text = "Much better!";
     speedTwo = createSprite(450, 245, 96, 25);
     speedTwo.collider = "static";
     speedTwo.image = newBumpImg;
     state.speedBump = 2;
-  } else if (distanceSB < 50 && state.speedBump == 0) {
+  } else if (distanceSB < 80 && state.speedBump == 0) {
     textArea.text =
       "Implementing speed bumps calms traffic and ensures pedestrian safety. Click to fix!";
     state.speedBump = 1;
