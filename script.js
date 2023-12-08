@@ -1,4 +1,6 @@
 let cityImg;
+let wall;
+let roof;
 let airImg;
 let busImg;
 let sideWalkImg;
@@ -76,7 +78,24 @@ function drawTextArea(text) {
   textArea.textSize = 17;
   textArea.text = text;
 }
-
+function drawWall(x, y) {
+  wall = new Sprite();
+  wall.x = x;
+  wall.y = y;
+  wall.w = 1;
+  wall.h = 1500;
+  wall.color = "black";
+  wall.collider = "static";
+}
+function drawRoof() {
+  roof = new Sprite();
+  roof.x = 630;
+  roof.y = 0;
+  roof.w = 1500;
+  roof.h = 1;
+  roof.color = "black";
+  roof.collider = "static";
+}
 function preload() {
   playerImg = loadAnimation("assets/Walk.png", {
     frameSize: [48, 48],
@@ -116,7 +135,7 @@ function setup() {
   player = new Sprite();
   player.addAni("walk", playerImg, 6);
   player.diameter = 50;
-  player.collider = "kinematic";
+  player.collider = "dynamic";
   player.rotationLock = true;
   player.text = "Player";
 }
@@ -191,6 +210,9 @@ function screenOne() {
     screen = 2;
     player.position.x = 625;
     drawScreenTwoSprite();
+    drawWall();
+    wall.x = 0;
+    wall.y = 580;
     bus.remove();
     if (state.bus == 2) {
       busTwo.remove();
@@ -201,6 +223,9 @@ function screenOne() {
     // Player went to the right side of the screen
     screen = 3;
     player.position.x = 0;
+    drawWall();
+    wall.x = 630;
+    wall.y = 0;
     bus.remove();
     if (state.bus == 2) {
       busTwo.remove();
@@ -256,6 +281,7 @@ function menuScreen() {
     drawScreenOneSprite();
     drawTextArea("How can the city be more walkable?");
     textArea.textSize = 14;
+    drawRoof();
   }
 }
 
@@ -270,6 +296,7 @@ function screenTwo() {
     textArea.text = "Where to next?";
     air.remove();
     crossWalk.remove();
+    wall.remove();
   }
   const distanceAir = calcPoints(
     player.position.x - air.position.x,
@@ -309,6 +336,7 @@ function screenThree() {
     drawScreenOneSprite();
     lamp.remove();
     speedBump.remove();
+    wall.remove();
   }
   const distanceSB = calcPoints(
     player.position.x - speedBump.position.x,
