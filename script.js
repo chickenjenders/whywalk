@@ -39,7 +39,7 @@ function drawSideWalk() {
 }
 
 function drawBus() {
-  bus = createSprite(270, 255, 95, 20);
+  bus = createSprite(270, 255, 15, 0);
   bus.collider = "static";
   bus.image = busImg;
 }
@@ -51,7 +51,7 @@ function drawBusTwo() {
 }
 
 function drawAir() {
-  air = createSprite(190, 150, 85, 20);
+  air = createSprite(150, 140, 85, 20);
   air.image = airImg;
   air.collider = "static";
 }
@@ -61,12 +61,12 @@ function drawCrossWalk() {
   crossWalk.image = crossWalkImg;
 }
 function drawSpeedBump() {
-  speedBump = createSprite(400, 325, 175, 20);
+  speedBump = createSprite(400, 325, 5, 50);
   speedBump.collider = "static";
   speedBump.image = speedBumpImg;
 }
 function drawLamp() {
-  lamp = createSprite(255, 400, 175, 20);
+  lamp = createSprite(255, 400, 0, 0);
   lamp.collider = "static";
   lamp.image = lampImg;
 }
@@ -123,10 +123,10 @@ function preload() {
   sideWalkImg = loadImage("assets/sidewalk.png", {
     frameSize: [256, 256],
   });
-  speedBumpImg = loadImage("assets/speedbump.png", {
+  speedBumpImg = loadImage("assets/speedbump2.png", {
     frameSize: [256, 256],
   });
-  newBumpImg = loadImage("assets/speedbump2.png", {
+  newBumpImg = loadImage("assets/speedbump.png", {
     frameSize: [256, 256],
   });
   lampImg = loadImage("assets/lamp.png", {
@@ -306,7 +306,6 @@ function screenTwo() {
     screen = 1;
     player.position.x = 0;
     drawScreenOneSprite();
-    textArea.text = "Where to next?";
     air.remove();
     crossWalk.remove();
     wall.remove();
@@ -350,6 +349,7 @@ function screenThree() {
     lamp.remove();
     speedBump.remove();
     wall.remove();
+    textArea.text = "Where to next?";
   }
   const distanceSB = calcPoints(
     player.position.x - speedBump.position.x,
