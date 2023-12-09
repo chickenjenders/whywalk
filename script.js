@@ -1,4 +1,7 @@
 let cityImg;
+let playerImg;
+let playerWalk;
+let player;
 let wall;
 let roof;
 let airImg;
@@ -97,7 +100,11 @@ function drawRoof() {
   roof.collider = "static";
 }
 function preload() {
-  playerImg = loadAnimation("assets/Walk.png", {
+  playerImg = loadAnimation("assets/idle.png", {
+    frameSize: [48, 48],
+    frames: 4,
+  });
+  playerWalk = loadAnimation("assets/Walk.png", {
     frameSize: [48, 48],
     frames: 6,
   });
@@ -133,7 +140,8 @@ function preload() {
 function setup() {
   createCanvas(630, 580);
   player = new Sprite();
-  player.addAni("walk", playerImg, 6);
+  player.addAni("idle", playerImg, 4);
+  player.addAni("walk", playerWalk, 6);
   player.diameter = 50;
   player.collider = "dynamic";
   player.rotationLock = true;
@@ -162,18 +170,23 @@ function draw() {
   if (kb.pressing("left")) {
     player.vel.x = -1.5;
     player.vel.y = 0;
+    player.changeAni("walk");
   } else if (kb.pressing("right")) {
     player.vel.x = 1.5;
     player.vel.y = 0;
+    player.changeAni("walk");
   } else if (kb.pressing("up")) {
     player.vel.y = -1.5;
     player.vel.x = 0;
+    player.changeAni("walk");
   } else if (kb.pressing("down")) {
     player.vel.y = 1.5;
     player.vel.x = 0;
+    player.changeAni("walk");
   } else {
     player.vel.y = 0;
     player.vel.x = 0;
+    player.changeAni("idle");
   }
 
   if (
