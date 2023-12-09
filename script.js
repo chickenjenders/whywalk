@@ -100,7 +100,7 @@ function drawRoof() {
   roof.collider = "static";
 }
 function preload() {
-  playerImg = loadAnimation("assets/idle.png", {
+  playerImg = loadAnimation("assets/Idle.png", {
     frameSize: [48, 48],
     frames: 4,
   });
